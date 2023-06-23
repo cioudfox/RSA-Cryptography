@@ -22,6 +22,7 @@ local function isPrime(n)
       return false
     end
   end
+  
   return true 
 end
 
@@ -30,6 +31,7 @@ end
 local function primeFactorization(n)
   local pfactors = {}
   local tempnum = n
+
   for i = 2, n do
     if isPrime(i) then
       while tempnum % i == 0 do 
@@ -38,6 +40,7 @@ local function primeFactorization(n)
       end
     end
   end
+
   return pfactors
 end
 
@@ -63,16 +66,16 @@ end
 
 -- Simple Calculation for D value with brute force
 -- More effective algo would be with Simplified Euclidean Algo
--- Too large to fit in this simulation
+-- Runtime is incredibly inefficient and can take O(e)
 local function d_calc(e,n)
   local v = 1 
   local nnum = n 
   local eval = e
   
-  while v % eval ~= 0
-  do
+  while v % eval ~= 0 do
     v = v + nnum
   end
+
   return v / e
 end
 
@@ -98,20 +101,25 @@ end
 
 
 --[[Variable Definition:
-    - M: Large Product of Primes. P * Q = m
-    - p = smaller prime factor, q = larger prime factor
-    - k = Euler's Totient(phi(k))
+    - Public Info
+      - m: Large Product of Primes
+      - e: Encryption Key
+        - Selection of e must be coprime to k and cannot be greater than k
+
+    - Private Info
+      - p,q: prime factors (Can be discarded after)
+      - k: Eulers totient (phi(k)) (Can be discarded after)
+      - d: Decryption Key (Calculated using p,q,k)
 ]]
-local m = 187
+local m = 697
 local pfacts = primeFactorization(m)
 local p,q = pfacts[1],pfacts[2]
 
 -- Calculate Euler's Totient to solve for d
 local k = (p-1) * (q-1)
 
--- Solve for e and d
--- E must be coprime to K or it cannot be reversed
--- Solve for e*d = 1 mod k(Bezouts Identity)
+-- E must be coprime to K
+-- Solve for d = e^-1 mod k(Bezouts Identity)
 local e = 3
 local d = d_calc(e,k)
 
